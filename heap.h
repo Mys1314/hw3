@@ -2,6 +2,7 @@
 #define HEAP_H
 #include <functional>
 #include <stdexcept>
+#include <vector>
 
 template <typename T, typename PComparator = std::less<T> >
 class Heap
@@ -61,13 +62,35 @@ public:
 
 private:
   /// Add whatever helper functions and data members you need below
-
-
-
-
+  int dimension;
+  PComparator Comp;
+  std::vector<T> data_;
 };
 
 // Add implementation of member functions here
+template <typename T, typename PComparator>
+Heap<T,PComparator>::Heap(int m, PComparator c){
+  dimension = m;
+  Comp = c;
+}
+
+template <typename T, typename PComparator>
+Heap<T,PComparator>::~Heap(){
+
+}
+
+template <typename T, typename PComparator>
+void Heap<T,PComparator>::push(const T& item){
+  int pos = data_.size();
+  data_.push_back(item);
+  while(pos > 0 && Comp(data_[pos],data_[(pos-1)/dimension])){
+    T temp = data_[pos];
+    data_[pos] = data_[(pos-1)/dimension];
+    data_[(pos-1)/dimension] = temp;
+    pos = (pos-1)/dimension;
+  }
+}
+
 
 
 // We will start top() for you to handle the case of 
@@ -81,14 +104,12 @@ T const & Heap<T,PComparator>::top() const
     // ================================
     // throw the appropriate exception
     // ================================
-
+    throw std::underflow_error("empty heap");
 
   }
   // If we get here we know the heap has at least 1 item
   // Add code to return the top element
-
-
-
+  return data_[0];
 }
 
 
@@ -101,14 +122,42 @@ void Heap<T,PComparator>::pop()
     // ================================
     // throw the appropriate exception
     // ================================
-
+    throw std::underflow_error("empty heap");
 
   }
-
-
-
+  //code from lab
+  data_[0] = data_[data_.size()-1];
+  data_.erase(data_.end()-1);
+  std::size_t index = 0;
+  std::size_t child_index = 0;
+  while (index*dimension+1 < data_.size()) {
+    child_index = index*dimension+1;
+    for(int i = 2; i <= dimension; i++){
+      if(index*dimension+i < data_.size() && Comp(data_[index*dimension+i],data_[child_index])){
+        child_index = index*dimension+i;
+      }
+    }
+    T& current = data_[index];
+    T& child = data_[child_index];
+    if (Comp(current,child)){
+      break;
+    }
+    T temp = data_[index];
+    data_[index] = data_[child_index];
+    data_[child_index] = temp;
+    index = child_index;
+  }
 }
 
+template <typename T, typename PComparator>
+bool Heap<T,PComparator>::empty() const{
+  return data_.empty();
+}
+
+template <typename T, typename PComparator>
+size_t Heap<T,PComparator>::size() const{
+  return data_.size();
+}
 
 
 #endif
