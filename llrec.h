@@ -87,8 +87,9 @@ Node* llfilter(Node* head, Comp pred)
         return NULL;
     }
     else if(pred(head->val)){
-        return(llfilter(head->next, pred));
+        Node* temp = head->next;
         delete head;
+        return(llfilter(temp, pred));
     }else{
         head->next = llfilter(head->next, pred);
         return head;
