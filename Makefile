@@ -6,9 +6,6 @@ OBJS=llrec-tests.o llrec.o
 
 all: llrec-test
 
-VALGRIND:
-	VALGRIND ./llrec_test
-
 #-----------------------------------------------------
 # ADD target(s) to build your llrec-test executable
 #-----------------------------------------------------
